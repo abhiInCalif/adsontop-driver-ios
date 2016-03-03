@@ -7,6 +7,11 @@
 //
 
 #import "AppDelegate.h"
+#import <MagicalRecord/MagicalRecord.h>
+#import "RestLayer.h"
+#import "Driver.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+
 
 @interface AppDelegate ()
 
@@ -17,7 +22,210 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    // configure the FB SDK for FB Login
+    [[FBSDKApplicationDelegate sharedInstance] application:application
+                             didFinishLaunchingWithOptions:launchOptions];
+    [MagicalRecord setupCoreDataStack];
+    NSError* configureError;
+    [[GGLContext sharedInstance] configureWithError: &configureError];
+    NSAssert(!configureError, @"Error configuring Google services: %@", configureError);
+    [GIDSignIn sharedInstance].delegate = self;
+    [GIDSignIn sharedInstance].shouldFetchBasicProfile = YES;
     return YES;
+}
+
+- (void)startLocationUpdates
+{
+    // Create the location manager if this object does not
+    // already have one.
+    if (self.locationManager == nil) {
+        self.locationManager = [[CLLocationManager alloc] init];
+        if(self.locationManager.locationServicesEnabled == NO){
+            NSLog(@"ERROR ERROR ERROR");
+        }
+    }
+    
+    self.locationManager.delegate = self;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    self.locationManager.activityType = CLActivityTypeAutomotiveNavigation;
+    
+    // Movement threshold for new events.
+    self.locationManager.distanceFilter = 500; // meters
+    
+    if ([self.locationManager respondsToSelector:@selector(setAllowsBackgroundLocationUpdates:)]) {
+        [self.locationManager setAllowsBackgroundLocationUpdates:YES];
+    }
+    
+    [self.locationManager requestAlwaysAuthorization];
+    [self.locationManager startUpdatingLocation];
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+     didUpdateLocations:(NSArray *)locations
+{
+    for (CLLocation *newLocation in locations) {
+        if (newLocation.horizontalAccuracy < 20) {
+            // send the new location to the server
+            AFHTTPSessionManager* signalManager = [RestLayer postSignal];
+            NSArray* d_list = [Driver MR_findAll];
+            Driver* d = [d_list objectAtIndex:0];
+            NSDictionary* parameters = @{@"driver": d.id, @"lat": [NSString stringWithFormat:@"%f", newLocation.coordinate.latitude], @"lon": [NSString stringWithFormat:@"%f", newLocation.coordinate.longitude]};
+            [signalManager POST:@"" parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
+                // do something if its a success and do something else if its a failure
+                NSLog(@"%@", responseObject);
+                } failure:^(NSURLSessionDataTask *task, NSError *error) {
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error Sending Signal Data"
+                                                                        message:[error localizedDescription]
+                                                                       delegate:nil
+                                                              cancelButtonTitle:@"Ok"
+                                                              otherButtonTitles:nil];
+                    [alertView show];
+            }];
+        }
+    }
+}
+
+- (BOOL)application:(UIApplication *)app
+            openURL:(NSURL *)url
+            options:(NSDictionary *)options {
+    return [[GIDSignIn sharedInstance] handleURL:url
+                               sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
+                                      annotation:options[UIApplicationOpenURLOptionsAnnotationKey]];
+}
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+    return [[GIDSignIn sharedInstance] handleURL:url
+                               sourceApplication:sourceApplication
+                                      annotation:annotation] ||
+    [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                   openURL:url
+                                         sourceApplication:sourceApplication
+                                                annotation:annotation];
+}
+
+- (void)signIn:(GIDSignIn *)signIn
+didSignInForUser:(GIDGoogleUser *)user
+     withError:(NSError *)error {
+    // Perform any operations on signed in user here.
+    NSString *userId = user.userID;                  // For client-side use only!
+    NSString *idToken = user.authentication.idToken; // Safe to send to the server
+    NSString *name = user.profile.name;
+    NSString *email = user.profile.email;
+    NSURL *imageURL = NULL;
+    if ([GIDSignIn sharedInstance].currentUser.profile.hasImage)
+    {
+        NSUInteger dimension = 140;
+        imageURL = [user.profile imageURLWithDimension:dimension];
+    }
+    
+    // Store the response from the server in the core data box;
+    AFHTTPSessionManager* driverManager = [RestLayer postDriver];
+    NSDictionary* parameters = @{@"name": name, @"email": email, @"google_userid": userId, @"google_idtoken": idToken, @"miles_driven_in_current_campaign": @"0"};
+    [driverManager POST:@"" parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
+        // store the returning data in core data as the full driver information
+        NSLog(@"Reached here!!!!!!!!!!!#$)@#*$)(#@*$)(@*#$()@*#)$(*@#)($*@)(*$)@*$");
+        [Driver MR_truncateAll];
+        NSDictionary* responseDict = responseObject;
+        [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *localContext) {
+            NSArray *drivers = [Driver MR_findAll];
+            if ([drivers count] == 0) {
+                Driver *d = [Driver MR_createEntityInContext:localContext];
+                d.name = name;
+                d.email = email;
+                d.google_idtoken = idToken;
+                d.google_userid = userId;
+                if (![responseDict[@"campaign"] isEqual:[NSNull null]]) {
+                    d.campaign = [NSNumber numberWithInt:[responseDict[@"campaign"] intValue]];
+                } else {
+                    d.campaign = [NSNumber numberWithInt:-1];
+                }
+                d.id = [NSNumber numberWithInt:[responseDict[@"id"] intValue]];
+                
+                // add the image
+                if ([imageURL absoluteString] != NULL) {
+                    d.image = [imageURL absoluteString];
+                } else {
+                    d.image = @"";
+                }
+                
+                // set the date
+                NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+                [dateFormat setDateFormat:@"yyyy-MM-dd"];
+                NSDate *date = [dateFormat dateFromString:responseDict[@"trial_end_date"]];
+                d.trial_end_date = date;
+            }
+            
+            // now transfer to next view
+            [self.window.rootViewController presentViewController:[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"mainRootController"] animated:YES completion:nil];
+            [self startLocationUpdates];
+            
+        }];
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSHTTPURLResponse* r = (NSHTTPURLResponse*)task.response;
+        NSInteger statusCode = r.statusCode;
+        if(statusCode == 400) {
+            // this is the duplicate POST request step.
+            // in this step we have to make the extra get request to get the driver information.
+            AFHTTPSessionManager* driverManager = [RestLayer getDriver:userId];
+            [driverManager GET:@"" parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+                // store the returning data in core data as the full driver information
+                NSLog(@"Reached here!!!!!!!!!!!#$)@#*$)(#@*$)(@*#$()@*#)$(*@#)($*@)(*$)@*$");
+                [Driver MR_truncateAll];
+                NSDictionary* responseDict = responseObject;
+                [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *localContext) {
+                    NSArray *drivers = [Driver MR_findAll];
+                    if ([drivers count] == 0) {
+                        Driver *d = [Driver MR_createEntityInContext:localContext];
+                        d.name = name;
+                        d.email = email;
+                        d.google_idtoken = idToken;
+                        d.google_userid = userId;
+                        if (![responseDict[@"campaign"] isEqual:[NSNull null]]) {
+                            d.campaign = [NSNumber numberWithInt:[responseDict[@"campaign"] intValue]];
+                        } else {
+                            d.campaign = [NSNumber numberWithInt:-1];
+                        }
+                        d.id = [NSNumber numberWithInt:[responseDict[@"id"] intValue]];
+                        // add the image
+                        if ([imageURL absoluteString] != NULL) {
+                            d.image = [imageURL absoluteString];
+                        } else {
+                            d.image = @"";
+                        }
+                        
+                        // set the date
+                        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+                        [dateFormat setDateFormat:@"yyyy-MM-dd"];
+                        NSDate *date = [dateFormat dateFromString:responseDict[@"trial_end_date"]];
+                        d.trial_end_date = date;
+                    }
+                    
+                    // now transfer to next view
+                    [self.window.rootViewController presentViewController:[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"mainRootController"] animated:YES completion:nil];
+                    [self startLocationUpdates];
+
+                }];
+            } failure:^(NSURLSessionDataTask *task, NSError *error) {
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error Retrieving Driver Data"
+                                                                    message:[error localizedDescription]
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"Ok"
+                                                          otherButtonTitles:nil];
+                [alertView show];
+            }];
+        } else {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error Retrieving Driver Data"
+                                                                message:[error localizedDescription]
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"Ok"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+        }
+    }];
+    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -36,12 +244,14 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [FBSDKAppEvents activateApp];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
+    [MagicalRecord cleanUp];
 }
 
 #pragma mark - Core Data stack
@@ -113,6 +323,8 @@
 
 - (void)saveContext {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+    NSManagedObjectContext *localContext = [NSManagedObjectContext MR_defaultContext];
+    [localContext MR_saveToPersistentStoreAndWait];
     if (managedObjectContext != nil) {
         NSError *error = nil;
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {

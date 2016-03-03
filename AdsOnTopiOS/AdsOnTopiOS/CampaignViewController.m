@@ -8,6 +8,7 @@
 
 #import "CampaignViewController.h"
 #import "CampaignSuperViewController.h"
+#import "DataLayer.h"
 
 @interface CampaignViewController ()
 
@@ -19,11 +20,24 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    // check how many days left on the trial
     self.dataSource = self;
     self.pageIdentifiers = [[NSArray alloc] initWithObjects:@"CampaignSelectAccept", @"CampaignSelectDetail", nil];
-    CampaignSuperViewController *startingViewController = [self viewControllerAtIndex:0];
-    NSArray *viewControllers = @[startingViewController];
-    [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:Nil];
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+//    int daysLeft = [DataLayer daysLeftInTrial];
+    int daysLeft = 0;
+    if (daysLeft > 0) {
+        // modal push time!
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        UIViewController* viewController = [storyboard instantiateViewControllerWithIdentifier:@"TrialNotComplete"];
+        [self presentViewController:viewController animated:YES completion:nil];
+    } else {
+        CampaignSuperViewController *startingViewController = [self viewControllerAtIndex:0];
+        NSArray *viewControllers = @[startingViewController];
+        [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:Nil];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

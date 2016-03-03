@@ -11,7 +11,10 @@
 
 @interface RestLayer : NSObject
 
-+(AFHTTPSessionManager*)getDriver:(int)i;
-+(AFHTTPSessionManager*)getCampaign:(int)i;
++(AFHTTPSessionManager*)getDriver:(NSString*)i;
++(AFHTTPSessionManager*)postDriver;
++(AFHTTPSessionManager*)getCampaign:(NSString*)i;
++(AFHTTPSessionManager*)postSignal;
++(AFHTTPSessionManager*)getDriverImage:(NSString*)uid;
 
 @end

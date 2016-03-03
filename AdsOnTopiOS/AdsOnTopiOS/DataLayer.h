@@ -7,7 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Driver.h"
 
 @interface DataLayer : NSObject
+
++(int)daysLeftInTrial;
++(Driver*)getDriver;
 
 @end

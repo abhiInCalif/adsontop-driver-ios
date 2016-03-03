@@ -23,7 +23,7 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    self.sideOutItems = [[NSArray alloc] initWithObjects:@"Dashboard", @"Campaigns", @"MyProfile",@"Settings", @"Trial_Month", nil];
+    self.sideOutItems = [[NSArray alloc] initWithObjects:@"Dashboard", @"Trial_Month", nil];
 }
 
 - (void)didReceiveMemoryWarning {
