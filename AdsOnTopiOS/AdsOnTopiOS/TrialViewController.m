@@ -30,8 +30,8 @@
     // update the amount of days left in the trial label.
     // get the driver record, and use the trial date item to compute number of days left in trial
     
-    int daysLeft = [DataLayer daysLeftInTrial];
-//    int daysLeft = 10;
+//    int daysLeft = [DataLayer daysLeftInTrial];
+    int daysLeft = 10;
     
     // depending on the number of days left in the trial we want to either launch a modal screen
     // that states that he should now go to the campaigns screen or update the number

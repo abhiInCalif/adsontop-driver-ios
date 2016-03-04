@@ -19,7 +19,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bit hat 2" translatesAutoresizingMaskIntoConstraints="NO" id="ymB-Fe-iiB">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="bit hat 2" translatesAutoresizingMaskIntoConstraints="NO" id="ymB-Fe-iiB">
                                 <rect key="frame" x="0.0" y="20" width="600" height="207"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="ymB-Fe-iiB" secondAttribute="height" multiplier="400:207" id="bME-TL-U7I"/>
@@ -37,7 +37,7 @@
                                     </mask>
                                 </variation>
                             </imageView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kOu-g9-HDN">
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kOu-g9-HDN">
                                 <rect key="frame" x="56" y="236" width="326" height="2"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -67,7 +67,7 @@
                                     </mask>
                                 </variation>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VwS-fF-YPc">
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VwS-fF-YPc">
                                 <rect key="frame" x="203" y="236" width="326" height="2"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -96,7 +96,7 @@
                                     </mask>
                                 </variation>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign In" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1wu-XX-meM">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Sign In" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1wu-XX-meM">
                                 <rect key="frame" x="52" y="213" width="487" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="1wu-XX-meM" secondAttribute="height" multiplier="101:45" id="R4q-q1-sWm"/>
@@ -116,7 +116,7 @@
                                     </mask>
                                 </variation>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DdM-Gh-4US" userLabel="Google Login" customClass="GIDSignInButton">
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DdM-Gh-4US" userLabel="Google Login" customClass="GIDSignInButton">
                                 <rect key="frame" x="39" y="264" width="512" height="71"/>
                                 <color key="backgroundColor" red="0.1529411765" green="0.45098039220000002" blue="0.71372549019999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -186,11 +186,11 @@
                                 <exclude reference="E0l-yp-CPt"/>
                                 <exclude reference="TVV-ta-3m4"/>
                                 <exclude reference="ysm-51-0o2"/>
-                                <exclude reference="uzm-fC-vmP"/>
                                 <exclude reference="0F7-qT-McT"/>
                                 <exclude reference="Rrc-fv-nB7"/>
                                 <exclude reference="TYe-Cv-wEZ"/>
                                 <exclude reference="gos-X4-p3G"/>
+                                <exclude reference="uzm-fC-vmP"/>
                                 <exclude reference="6A2-94-bIP"/>
                                 <exclude reference="CXh-2j-egU"/>
                                 <exclude reference="Fb6-F7-vX5"/>
@@ -210,11 +210,11 @@
                                 <include reference="E0l-yp-CPt"/>
                                 <include reference="TVV-ta-3m4"/>
                                 <include reference="ysm-51-0o2"/>
-                                <exclude reference="uzm-fC-vmP"/>
                                 <include reference="0F7-qT-McT"/>
                                 <include reference="Rrc-fv-nB7"/>
                                 <include reference="TYe-Cv-wEZ"/>
                                 <include reference="gos-X4-p3G"/>
+                                <exclude reference="uzm-fC-vmP"/>
                                 <exclude reference="6A2-94-bIP"/>
                                 <exclude reference="CXh-2j-egU"/>
                                 <include reference="Fb6-F7-vX5"/>
@@ -288,6 +288,9 @@
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="sidebarButton" destination="UuI-m1-D9w" id="n2T-Q6-52d"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sLI-ga-QSP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -948,7 +951,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="535"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K0P-B2-23d">
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="K0P-B2-23d">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="372"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="top top" translatesAutoresizingMaskIntoConstraints="NO" id="bmN-B4-TwT">
@@ -965,8 +968,7 @@
                                                 <exclude reference="UHx-40-oZW"/>
                                             </mask>
                                         </variation>
-                                        <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                            <rect key="frame" x="-63" y="0.0" width="562" height="360"/>
+                                        <variation key="heightClass=regular-widthClass=compact">
                                             <mask key="constraints">
                                                 <exclude reference="0p9-WV-Pg6"/>
                                                 <exclude reference="F7Z-lN-YQP"/>
@@ -983,9 +985,6 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="48"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
-                                        <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                            <rect key="frame" x="17" y="113" width="366" height="147"/>
-                                        </variation>
                                     </label>
                                 </subviews>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1005,14 +1004,14 @@
                                         <exclude reference="iF5-Mv-DxN"/>
                                     </mask>
                                     <mask key="constraints">
+                                        <exclude reference="Sxn-vJ-cfo"/>
+                                        <exclude reference="c2a-3c-bGO"/>
                                         <exclude reference="Csf-em-qRX"/>
                                         <exclude reference="GtG-Es-UW7"/>
                                         <exclude reference="LKK-o6-Fux"/>
                                         <exclude reference="MD0-Vy-luV"/>
                                         <exclude reference="QI5-wa-hnE"/>
                                         <exclude reference="nKA-oX-wrl"/>
-                                        <exclude reference="Sxn-vJ-cfo"/>
-                                        <exclude reference="c2a-3c-bGO"/>
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
@@ -1022,21 +1021,21 @@
                                         <include reference="iF5-Mv-DxN"/>
                                     </mask>
                                     <mask key="constraints">
+                                        <include reference="Sxn-vJ-cfo"/>
+                                        <include reference="c2a-3c-bGO"/>
                                         <include reference="Csf-em-qRX"/>
                                         <include reference="GtG-Es-UW7"/>
                                         <include reference="LKK-o6-Fux"/>
                                         <exclude reference="MD0-Vy-luV"/>
                                         <exclude reference="QI5-wa-hnE"/>
                                         <include reference="nKA-oX-wrl"/>
-                                        <include reference="Sxn-vJ-cfo"/>
-                                        <include reference="c2a-3c-bGO"/>
                                     </mask>
                                 </variation>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dqg-uZ-Sp8">
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Dqg-uZ-Sp8">
                                 <rect key="frame" x="0.0" y="375" width="161" height="160"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1400" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dqp-5a-8MZ">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="1400" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dqp-5a-8MZ">
                                         <rect key="frame" x="8" y="8" width="146" height="102"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="32"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1045,7 +1044,7 @@
                                             <rect key="frame" x="8" y="8" width="146" height="302"/>
                                         </variation>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="miles" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hD2-7d-wBv">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="miles" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hD2-7d-wBv">
                                         <rect key="frame" x="8" y="58" width="146" height="102"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1070,10 +1069,10 @@
                                     <rect key="frame" x="0.0" y="375" width="161" height="360"/>
                                 </variation>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="scE-x1-hko">
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="scE-x1-hko">
                                 <rect key="frame" x="165" y="375" width="435" height="160"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="03:00" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Zt-1f-z3H">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="03:00" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Zt-1f-z3H">
                                         <rect key="frame" x="6" y="8" width="426" height="102"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="32"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1082,7 +1081,7 @@
                                             <rect key="frame" x="6" y="8" width="226" height="302"/>
                                         </variation>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="hours" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hyt-IP-CSj">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="hours" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hyt-IP-CSj">
                                         <rect key="frame" x="6" y="58" width="426" height="102"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
